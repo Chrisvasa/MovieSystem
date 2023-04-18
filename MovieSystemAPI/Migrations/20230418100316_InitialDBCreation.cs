@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace MovieSystem.Migrations
+namespace MovieSystemAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class initialdbcreation : Migration
+    public partial class InitialDBCreation : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -132,7 +132,7 @@ namespace MovieSystem.Migrations
                         column: x => x.MovieId,
                         principalTable: "Movies",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Ratings_Persons_PersonId",
                         column: x => x.PersonId,
