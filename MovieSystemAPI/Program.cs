@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MovieSystem.DataAccess;
+using MovieSystem.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,22 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/api/Persons/", async (DataContext context) => await context.Persons.ToListAsync());
+app.MapGet("/api/Movies/", async (DataContext context) =>
+{
+    var movies = context.Movies;
+    var moviePerson = movies.Join(context.Persons, movie => movie.PersonId,
+        per => per.Id, (movie, per) => new
+        {
+            movie.Name,
+            movie.Link,
+            movie.DateAdded,
+            per.FirstName,
+            per.LastName
+        }).ToListAsync();
+    return await moviePerson;
+});
+//Get Person by Name
+//app.MapGet("/api/Persons/{firstName}", async (DataContext context, string firstName) =>
+//    await context.Persons.FindAsync(firstName) is Person person ? Results.Ok(person) : Results.NotFound("Person not found ./"));
 
 app.Run();
