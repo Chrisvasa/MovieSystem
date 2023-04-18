@@ -4,4 +4,5 @@
 
 MovieSystemAPI/.vs
 app.config
-appsettings.Development
+appsettings.Development.json
+appsettings.json
