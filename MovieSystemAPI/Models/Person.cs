@@ -17,7 +17,7 @@ namespace MovieSystem.Models
         [StringLength(50)]
         public string? FirstName { get; set; }
         [Required]
-        [DisplayName("First Name")]
+        [DisplayName("Last Name")]
         [StringLength(50)]
         public string? LastName { get; set; }
         [Required]
