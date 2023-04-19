@@ -12,8 +12,8 @@ using MovieSystem.DataAccess;
 namespace MovieSystemAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230418100316_InitialDBCreation")]
-    partial class InitialDBCreation
+    [Migration("20230419120058_DBCreation")]
+    partial class DBCreation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -64,13 +64,13 @@ namespace MovieSystemAPI.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
-                    b.Property<string>("Name")
+                    b.Property<int>("PersonId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("PersonId")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

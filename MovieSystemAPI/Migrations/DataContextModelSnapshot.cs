@@ -43,6 +43,122 @@ namespace MovieSystemAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Genres");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 28,
+                            Description = "Big BOOM",
+                            Name = "Action"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Description = "Big ADVENTURE",
+                            Name = "Adventure"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            Description = "Big COMPUTERGRAPHIC",
+                            Name = "Animation"
+                        },
+                        new
+                        {
+                            Id = 35,
+                            Description = "Big LAUGH",
+                            Name = "Comedy"
+                        },
+                        new
+                        {
+                            Id = 80,
+                            Description = "Big POLICE CHASE",
+                            Name = "Crime"
+                        },
+                        new
+                        {
+                            Id = 99,
+                            Description = "Big REAL LIFE MOVIE",
+                            Name = "Documentary"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            Description = "Big ARGUMENT",
+                            Name = "Drama"
+                        },
+                        new
+                        {
+                            Id = 10751,
+                            Description = "Vin Diesel",
+                            Name = "Family"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Description = "Big NERD",
+                            Name = "Fantasy"
+                        },
+                        new
+                        {
+                            Id = 36,
+                            Description = "Big OLD MAN STORY",
+                            Name = "History"
+                        },
+                        new
+                        {
+                            Id = 27,
+                            Description = "Big SCARE",
+                            Name = "Horror"
+                        },
+                        new
+                        {
+                            Id = 10402,
+                            Description = "Big UNTZ UNTZ",
+                            Name = "Music"
+                        },
+                        new
+                        {
+                            Id = 9648,
+                            Description = "Big HMM",
+                            Name = "Mystery"
+                        },
+                        new
+                        {
+                            Id = 10749,
+                            Description = "Big LOVE STORY",
+                            Name = "Romance"
+                        },
+                        new
+                        {
+                            Id = 878,
+                            Description = "Big SMARTS",
+                            Name = "Science Fiction"
+                        },
+                        new
+                        {
+                            Id = 10770,
+                            Description = "Big MOVIE",
+                            Name = "TV Movie"
+                        },
+                        new
+                        {
+                            Id = 53,
+                            Description = "Big MICHAEL JACKSON",
+                            Name = "Thriller"
+                        },
+                        new
+                        {
+                            Id = 10752,
+                            Description = "Big PANG PANG",
+                            Name = "War"
+                        },
+                        new
+                        {
+                            Id = 37,
+                            Description = "Big YEHAAAW",
+                            Name = "Western"
+                        });
                 });
 
             modelBuilder.Entity("MovieSystem.Models.Movie", b =>

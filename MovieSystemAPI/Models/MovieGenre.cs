@@ -13,9 +13,11 @@ namespace MovieSystem.Models
         [Key]
         public int Id { get; set; }
         [ForeignKey("Movie")]
+        [Required]
         public int MovieId { get; set; }
         public virtual Movie Movie { get; set; }
         [ForeignKey("Genre")]
+        [Required]
         public int GenreId { get; set; }
         public virtual Genre Genre { get; set; }
     }

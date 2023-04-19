@@ -25,10 +25,10 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 
-// Hämta alla personer i systemet
+// Hämta alla personer i systemet -- CHECK
 app.MapGet("/api/Persons/", async (DataContext context) => await context.Persons.ToListAsync());
 
-// Hämta alla genrer som är kopplade till en specifik person
+// Hämta alla genrer som är kopplade till en specifik person -- CHECK
 app.MapGet("/api/Genres/{firstName}", async (DataContext context, string Name) =>
 {
     var test = from person in context.PersonGenres
@@ -43,34 +43,34 @@ app.MapGet("/api/Genres/{firstName}", async (DataContext context, string Name) =
     return await result;
 });
 
-// Hämta alla filmer som är kopplade till en specifik person
-app.MapGet("/api/Movies/{genreName}", async (DataContext context, string Name) =>
+// Hämta matchande filmer till eftersökta genren -- CHECK
+app.MapGet("/api/Genres/", async (DataContext context, string Name) =>
 {
     var test = from mg in context.MovieGenres
                select new
                {
                    mg.Movie.Title,
-                   mg.Genre.Name
+                   mg.Genre.Name,
+                   mg.Movie.Link
                };
     var result = test.GroupBy(x => x.Name)
-            .Select(x => new { Genre = x.Key, Matches = string.Join(", ", x.Select(y => y.Title)) })
+            .Select(x => new { Genre = x.Key, Matches = string.Join(", ", x.Select(y => y.Title)), Links = x.Select(z => z.Link).Distinct() })
             .Where(x => x.Genre == Name).ToListAsync();
     return await result;
 });
-//app.MapGet("/api/Movies/{firstName}", async (DataContext context, string Name) =>
-//{
-//    var movies = context.Movies;
-//    var moviePerson = movies.Join(context.Persons, movie => movie.PersonId,
-//        per => per.Id, (movie, per) => new
-//        {
-//            movie.Name,
-//            movie.Link,
-//            movie.DateAdded,
-//            per.FirstName,
-//            per.LastName
-//        }).Where(x => x.FirstName == Name).OrderBy(x => x.Name).ToListAsync();
-//    return await moviePerson;
-//});
+
+//Hämta alla filmer som är kopplade till en specifik person
+app.MapGet("/api/Movies/{firstName}", async (DataContext context, string Name) =>
+{
+    var test = from r in context.Ratings
+               select new
+               {
+                   r.Person.FirstName,
+                   r.Movie.Title,
+                   r.MovieRating
+               };
+    return await test.Where(x => x.FirstName == Name).ToListAsync();
+});
 
 // Lägga in och hämta "rating" på filmer kopplat till en person
 
