@@ -25,5 +25,6 @@ namespace MovieSystem.Models
         [ForeignKey("Person")]
         public int PersonId { get; set; }
         public Person Person { get; set; }
+        List<Movie> Movies { get; set; }
     }
 }

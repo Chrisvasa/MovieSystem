@@ -21,6 +21,7 @@ namespace MovieSystem.Models
         public int MovieId { get; set; }
         public virtual Movie Movie { get; set; }
         [Required]
+        [Range(0, 10)]
         public int MovieRating { get; set; }
     }
 }
