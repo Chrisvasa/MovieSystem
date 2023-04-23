@@ -199,7 +199,7 @@ internal class Program
             // Gets the correct genreID that tmdb uses
             int genreID = context.Genres.First(x => x.Name.Contains(genre)).Id;
             // The API key to use for TMDB - Input your own here
-            string apiKey = "d82f364f4fa13e9d2bc3e63a48f37d0c";
+            string apiKey = "";
             string url = $"https://api.themoviedb.org/3/discover/movie?api_key={apiKey}&language=en-US&sort_by=vote_count.desc&include_adult=false&include_video=false&page=1&with_genres={genreID}&with_watch_monetization_types=flatrate";
 
             var client = new HttpClient();
