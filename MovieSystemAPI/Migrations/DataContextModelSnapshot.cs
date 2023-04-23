@@ -42,7 +42,126 @@ namespace MovieSystemAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("Genres");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 28,
+                            Description = "Big BOOM",
+                            Name = "Action"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Description = "Big ADVENTURE",
+                            Name = "Adventure"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            Description = "Big COMPUTERGRAPHIC",
+                            Name = "Animation"
+                        },
+                        new
+                        {
+                            Id = 35,
+                            Description = "Big LAUGH",
+                            Name = "Comedy"
+                        },
+                        new
+                        {
+                            Id = 80,
+                            Description = "Big POLICE CHASE",
+                            Name = "Crime"
+                        },
+                        new
+                        {
+                            Id = 99,
+                            Description = "Big REAL LIFE MOVIE",
+                            Name = "Documentary"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            Description = "Big ARGUMENT",
+                            Name = "Drama"
+                        },
+                        new
+                        {
+                            Id = 10751,
+                            Description = "Vin Diesel",
+                            Name = "Family"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Description = "Big NERD",
+                            Name = "Fantasy"
+                        },
+                        new
+                        {
+                            Id = 36,
+                            Description = "Big OLD MAN STORY",
+                            Name = "History"
+                        },
+                        new
+                        {
+                            Id = 27,
+                            Description = "Big SCARE",
+                            Name = "Horror"
+                        },
+                        new
+                        {
+                            Id = 10402,
+                            Description = "Big UNTZ UNTZ",
+                            Name = "Music"
+                        },
+                        new
+                        {
+                            Id = 9648,
+                            Description = "Big HMM",
+                            Name = "Mystery"
+                        },
+                        new
+                        {
+                            Id = 10749,
+                            Description = "Big LOVE STORY",
+                            Name = "Romance"
+                        },
+                        new
+                        {
+                            Id = 878,
+                            Description = "Big SMARTS",
+                            Name = "Science Fiction"
+                        },
+                        new
+                        {
+                            Id = 10770,
+                            Description = "Big MOVIE",
+                            Name = "TV Movie"
+                        },
+                        new
+                        {
+                            Id = 53,
+                            Description = "Big MICHAEL JACKSON",
+                            Name = "Thriller"
+                        },
+                        new
+                        {
+                            Id = 10752,
+                            Description = "Big PANG PANG",
+                            Name = "War"
+                        },
+                        new
+                        {
+                            Id = 37,
+                            Description = "Big YEHAAAW",
+                            Name = "Western"
+                        });
                 });
 
             modelBuilder.Entity("MovieSystem.Models.Movie", b =>
@@ -71,9 +190,42 @@ namespace MovieSystemAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Link")
+                        .IsUnique();
+
                     b.HasIndex("PersonId");
 
                     b.ToTable("Movies");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Link = "https://www.themoviedb.org/movie/562-die-hard",
+                            PersonId = 1,
+                            Title = "Die Hard"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Link = "https://www.themoviedb.org/movie/245891-john-wick",
+                            PersonId = 1,
+                            Title = "John Wick"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Link = "https://www.themoviedb.org/movie/324552-john-wick-chapter-2",
+                            PersonId = 3,
+                            Title = "John Wick: Chapter 2"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Link = "https://www.themoviedb.org/movie/502356-the-super-mario-bros-movie",
+                            PersonId = 4,
+                            Title = "The Super Mario Bros. Movie"
+                        });
                 });
 
             modelBuilder.Entity("MovieSystem.Models.MovieGenre", b =>
@@ -94,9 +246,84 @@ namespace MovieSystemAPI.Migrations
 
                     b.HasIndex("GenreId");
 
-                    b.HasIndex("MovieId");
+                    b.HasIndex("MovieId", "GenreId")
+                        .IsUnique();
 
                     b.ToTable("MovieGenres");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            GenreId = 28,
+                            MovieId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            GenreId = 35,
+                            MovieId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            GenreId = 28,
+                            MovieId = 2
+                        },
+                        new
+                        {
+                            Id = 4,
+                            GenreId = 53,
+                            MovieId = 2
+                        },
+                        new
+                        {
+                            Id = 5,
+                            GenreId = 28,
+                            MovieId = 3
+                        },
+                        new
+                        {
+                            Id = 6,
+                            GenreId = 80,
+                            MovieId = 3
+                        },
+                        new
+                        {
+                            Id = 7,
+                            GenreId = 53,
+                            MovieId = 3
+                        },
+                        new
+                        {
+                            Id = 8,
+                            GenreId = 16,
+                            MovieId = 4
+                        },
+                        new
+                        {
+                            Id = 9,
+                            GenreId = 12,
+                            MovieId = 4
+                        },
+                        new
+                        {
+                            Id = 10,
+                            GenreId = 10751,
+                            MovieId = 4
+                        },
+                        new
+                        {
+                            Id = 11,
+                            GenreId = 14,
+                            MovieId = 4
+                        },
+                        new
+                        {
+                            Id = 12,
+                            GenreId = 35,
+                            MovieId = 4
+                        });
                 });
 
             modelBuilder.Entity("MovieSystem.Models.Person", b =>
@@ -124,7 +351,54 @@ namespace MovieSystemAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.ToTable("Persons");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "Fibbe@biffkatt.se",
+                            FirstName = "Fibbe",
+                            LastName = "Biffkatt"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Email = "Hank@hill.usa",
+                            FirstName = "Hank",
+                            LastName = "Hill"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Email = "Bob@mail.com",
+                            FirstName = "Bob",
+                            LastName = "Mcbobson"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Email = "Tjurskalle@mail.com",
+                            FirstName = "Ferdinand",
+                            LastName = "Tjurskalle"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Email = "Billy@mail.com",
+                            FirstName = "Billy",
+                            LastName = "Willy"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Email = "Roger@mail.com",
+                            FirstName = "Roger",
+                            LastName = "Pontare"
+                        });
                 });
 
             modelBuilder.Entity("MovieSystem.Models.PersonGenre", b =>
@@ -145,9 +419,66 @@ namespace MovieSystemAPI.Migrations
 
                     b.HasIndex("GenreId");
 
-                    b.HasIndex("PersonId");
+                    b.HasIndex("PersonId", "GenreId")
+                        .IsUnique();
 
                     b.ToTable("PersonGenres");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            GenreId = 28,
+                            PersonId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            GenreId = 35,
+                            PersonId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            GenreId = 80,
+                            PersonId = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            GenreId = 28,
+                            PersonId = 2
+                        },
+                        new
+                        {
+                            Id = 5,
+                            GenreId = 35,
+                            PersonId = 2
+                        },
+                        new
+                        {
+                            Id = 6,
+                            GenreId = 12,
+                            PersonId = 3
+                        },
+                        new
+                        {
+                            Id = 7,
+                            GenreId = 10751,
+                            PersonId = 3
+                        },
+                        new
+                        {
+                            Id = 8,
+                            GenreId = 18,
+                            PersonId = 4
+                        },
+                        new
+                        {
+                            Id = 9,
+                            GenreId = 878,
+                            PersonId = 4
+                        });
                 });
 
             modelBuilder.Entity("MovieSystem.Models.Rating", b =>

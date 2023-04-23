@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MovieSystemAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class DBCreation : Migration
+    public partial class InitialDBCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
