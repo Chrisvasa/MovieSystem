@@ -1,3 +1,4 @@
+
   
 
 # A C# Minimal API project
@@ -5,10 +6,7 @@
   
 
 A simple project in C# involving Minimal API, Entity Framework and SSMS. Allows the user to access and add to different parts of the DB with the use of API calls.
-
   
-  
-
 ## Features
 
   
@@ -19,20 +17,46 @@ A simple project in C# involving Minimal API, Entity Framework and SSMS. Allows 
 - Connect users to new movies, genres.
 - Add Movies to the database and discover movies to any given genre. ([Thanks to TheMovieDBs API](https://www.themoviedb.org/))
 
+## Setup
+
+  To setup this project, first you need to clone this repo. And then open the solution in your IDE (Visual studio etc) and make sure to add a appsettings.json file that includes your connection string to the database(*I am using MSSQL for this project*).
+  
+
+        {
+      "ConnectionStrings": {
+        "DefaultConnection": "Server=NameOfYourDesktop;Initial Catalog=DB_Name;Integrated Security=true;TrustServerCertificate=True"
+      },
+      "Logging": {
+        "LogLevel": {
+          "Default": "Information",
+          "Microsoft.AspNetCore": "Warning"
+        }
+      }
+    }
+First make sure you have dotnet tools installed:
+
+    dotnet tool install --global dotnet-ef
+
+And after that, you simply need to write in the Package Manager Console:
+
+    dotnet ef database update
+After that your database should be up and running with some testdata and can now be connected used with this program.
+To start this program simply build it and run it inside visual studio, or build the solution and use it that way.
 ## API Requests and their returned Data
 
   
 | API Requests | Return Data |
 | ------------- | ------------- |
 | /api/Persons/| Returns information about all the users in the Database (Id, Name and Email)|
-| /api/Genres/FilterByPerson?Name={FirstName}| Returns all liked genres of a specified user |
-| /api/Genres/FilterByGenre?Name={GenreName} | An API call that allows the user to get all matching movies to a given genre |
-| /api/Movies/GetMoviesForPerson?Name={FirstName} | Get all movies that a user has added to the DB |
-| /api/Ratings/GetRatingsForPerson?Name={FirstName} | Get all movies and their ratings that a user has given|
-| /api/ratings/addrating?movieId={movieId}&movieRating={rating}&personId={personId}| Allows a person to add ratings to a movie |
-| /api/Genre/AddPersonToGenre?personId={personId}&genreId={genreId}| Allows a person to like new genres |
-| /api/Movies/Add?title={movieTitle}&link={movieURL}&genres={GenresSeparatedByCommas}&personId={personId}| Allows for addition of new movies and their specified genres to the DB|
-| /api/Movies/Suggestions?genre={genreName}| Searches for new movies with the specified genre (Uses TheMovieDBs API)|
+| /api/Genres/| Returns information about all the genres in the Database (Id, Name and Description)|
+| /api/Genres/FilterByPerson?userID=1| Returns all liked genres of a specified user |
+| /api/Genres/FilterByGenre?Name=Action | An API call that allows the user to get all matching movies to a given genre |
+| /api/Movies/GetMoviesForPerson?userID=1| Get all movies that a user has added to the DB |
+| /api/Ratings/GetRatingsForPerson?userID=1 | Get all movies and their ratings that a user has given|
+| /api/ratings/addrating?movieId=2&movieRating=8&personId=1| Allows a person to add ratings to a movie |
+| /api/Genre/AddPersonToGenre?personId=1&genreId=35| Allows a person to like new genres |
+| /api/Movies/Add?title=Die%Hard&link={movieURL}&genres=35,28&personId=1| Allows for addition of new movies and their specified genres to the DB|
+| /api/Movies/Suggestions?genre=action| Searches for new movies with the specified genre (Uses TheMovieDBs API)|
   
   
 
