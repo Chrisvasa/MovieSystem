@@ -15,6 +15,8 @@ internal class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
+        builder.Services.AddCors(options => options.AddDefaultPolicy(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
+
         //Connection string
         builder.Services.AddDbContext<DataContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -30,23 +32,51 @@ internal class Program
 
         app.UseHttpsRedirection();
 
+        app.UseCors();
+
 
         // Gets all the users in the DB
         app.MapGet("/api/Persons/", async (DataContext context) => await context.Persons.ToListAsync());
 
-        // Gets all the liked genres from the given person
-        app.MapGet("/api/Genres/FilterByPerson", async (DataContext context, string Name) =>
+        app.MapPost("/api/Persons/Add", async (DataContext context, string FirstName, string LastName, string Email) =>
         {
-            var genres = from person in context.PersonGenres
+            var email = await context.Persons.FirstOrDefaultAsync(p => p.Email == Email);
+            if (email != null)
+            {
+                return Results.NotFound();
+            }
+
+            var person = new Person
+            {
+                FirstName = FirstName,
+                LastName = LastName,
+                Email = Email
+            };
+            context.Persons.Add(person);
+            await context.SaveChangesAsync();
+            return Results.Created($"/api/Persons/Add", person);
+        });
+
+        // Gets all the genres in the DB
+        app.MapGet("/api/Genres/", async (DataContext context) => await context.Genres.ToListAsync());
+
+        // Gets all the liked genres from the given person
+        app.MapGet("/api/Genres/FilterByPerson", async (DataContext context, int userID) =>
+        {
+            var genres = from pg in context.PersonGenres
                        select new
                        {
-                           person.Person.FirstName,
-                           person.Genre.Name
+                           Id = pg.Person.Id,
+                           FirstName = pg.Person.FirstName,
+                           GenreID = pg.Genre.Id,
+                           name = pg.Genre.Name,
+                           Description = pg.Genre.Description
                        };
             // This groups up the genres and adds them together, which gives us a nicer format in the JSON file
-            var result = genres.GroupBy(x => x.FirstName)
-                    .Select(x => new { Name = x.Key, LikedGenres = string.Join(", ", x.Select(y => y.Name)) })
-                    .Where(x => x.Name == Name).ToListAsync();
+            //var result = genres.GroupBy(x => x.FirstName)
+            //        .Select(x => new { Name = x.Key, LikedGenres = string.Join(", ", x.Select(y => y.Name)) })
+            //        .Where(x => x.Name == Name).ToListAsync();
+            var result = genres.Where(x => x.Id == userID).ToListAsync();
             return await result;
         });
 
@@ -69,41 +99,46 @@ internal class Program
 
         //Hämta alla filmer som är kopplade till en specifik person
         // Gets all the movies that a user has added to the database
-        app.MapGet("/api/Movies/GetMoviesForPerson", async (DataContext context, string Name) =>
+        app.MapGet("/api/Movies/GetMoviesForPerson", async (DataContext context, int userID) =>
         {
-            var movies = from m in context.Movies
+            var movies = from m in context.Movies.Distinct()
                        select new
                        {
-                           m.Person.FirstName,
-                           m.Title
+                           m.Id,
+                           m.Title,
+                           m.Link,
+                           Added_By = m.Person.FirstName,
+                           personID = m.Person.Id
                        };
-            // Gets all the matching persons 
-            // EX. f will return all names containing f such as Fibbe
-            return await movies.Where(x => x.FirstName.Contains(Name)).ToListAsync();
+            return await movies.Where(x => x.personID == userID).ToListAsync();
         });
 
         // Gets all the movies a specific person has rated
-        app.MapGet("/api/Ratings/GetRatingsForPerson", async (DataContext context, string Name) =>
+        app.MapGet("/api/Ratings/GetRatingsForPerson", async (DataContext context, int userID) =>
         {
             var ratings = from r in context.Ratings
                        select new
                        {
+                           personID = r.Person.Id,
                            r.Person.FirstName,
-                           MovieTitle = r.Movie.Title,
+                           r.Movie.Id,
+                           r.Movie.Title,
+                           r.Movie.Link,
                            r.MovieRating
                        };
             // This groups up the ratings and adds them together, which gives us a nicer format in the JSON file
-            var result = ratings.GroupBy(x => x.FirstName).OrderBy(x => x.Key)
-                    .Select(x => new { Person = x.Key, MoviesRatings = string.Join(',', x.Select(y => y.MovieTitle + " - Rating: " +  y.MovieRating)).Split(',', StringSplitOptions.None)})
-                    .Where(x => x.Person == Name).ToListAsync();
+            //var result = ratings.GroupBy(x => x.FirstName).OrderBy(x => x.Key)
+            //        .Select(x => new { Person = x.Key, MoviesRatings = string.Join(',', x.Select(y => y.MovieTitle + " - Rating: " +  y.MovieRating)).Split(',', StringSplitOptions.None)})
+            //        .Where(x => x.Person == Name).ToListAsync();
+            var result = ratings.Where(x => x.personID == userID).ToListAsync();
             return await result;
         });
 
         // Method to allow users to rate movies
-        app.MapPost("/api/ratings/addrating", async (DataContext context, int movieId, int movieRating, int personId) =>
+        app.MapPost("/api/ratings/addrating", async (DataContext context, string title, int movieRating, int personId) =>
         {
             // Checks if the movie exists in the DB
-            var movie = await context.Movies.FirstOrDefaultAsync(m => m.Id == movieId);
+            var movie = await context.Movies.FirstOrDefaultAsync(m => m.Title == title);
             if (movie == null)
             {
                 return Results.NotFound();
@@ -159,37 +194,37 @@ internal class Program
         // Also adds the given Genres to the movie in the MovieGenre Table
         app.MapPost("/api/Movies/Add", async (DataContext context, string title, string link, string genres, int personId) =>
         {
-            // Splits the genres into an array
-            string[] arrGenres = genres.Split(',');
-            var person = await context.Persons.FirstOrDefaultAsync(p => p.Id == personId);
-            if (person == null)
-            {
-                return Results.NotFound();
-            }
-            // Adds the movie to the database with the given input
-            var movie = new Movie
-            {
-                Title = title,
-                Link = link,
-                PersonId = person.Id
-            };
-            context.Movies.Add(movie);
-            await context.SaveChangesAsync();
-
-            // Gets the newly added movieID from the database to correctly add the genres
-            int movieId = context.Movies.First(am => am.Title == movie.Title).Id;
-            for (int i = 0; i < arrGenres.Length; i++)
-            {
-                var movieGenre = new MovieGenre
+                // Splits the genres into an array
+                string[] arrGenres = genres.Split(',');
+                var person = await context.Persons.FirstOrDefaultAsync(p => p.Id == personId);
+                if (person == null)
                 {
-                    // Gets the genreID that belongs to the given genre
-                    GenreId = context.Genres.First(g => g.Name.Contains(arrGenres[i])).Id,
-                    MovieId = movieId
+                    return Results.NotFound();
+                }
+                // Adds the movie to the database with the given input
+                var movie = new Movie
+                {
+                    Title = title,
+                    Link = link,
+                    PersonId = person.Id
                 };
-                context.MovieGenres.Add(movieGenre);
+                context.Movies.Add(movie);
                 await context.SaveChangesAsync();
-            };
-            return Results.Created($"/api/Movies/Add", movie);
+
+                // Gets the newly added movieID from the database to correctly add the genres
+                int movieId = context.Movies.First(am => am.Title == movie.Title).Id;
+                for (int i = 0; i < arrGenres.Length; i++)
+                {
+                    var movieGenre = new MovieGenre
+                    {
+                        // Gets the genreID that belongs to the given genre
+                        GenreId = Convert.ToInt32(arrGenres[i]),
+                        MovieId = movieId
+                    };
+                    context.MovieGenres.Add(movieGenre);
+                };
+                await context.SaveChangesAsync();
+                return Results.Ok($"/api/Movies/Add");
         });
 
         // This method allows the user to discover new movies that they might like by getting the genreID from the DB
